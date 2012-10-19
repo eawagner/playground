@@ -41,8 +41,8 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
         if (!tRange.hasUpperBound())
             return intervalSet.last();
 
-        Range<T> endrange = intervalSet.ceiling(Ranges.singleton(tRange.upperEndpoint()));
-        return (endrange == null ? intervalSet.last() : endrange);
+        Range<T> endrange = intervalSet.floor(Ranges.singleton(tRange.upperEndpoint()));
+        return (endrange == null ? intervalSet.first() : endrange);
     }
 
     private Set<Range<T>> intersectingRanges(Range<T> tRange) {
@@ -119,7 +119,7 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
      */
     @Override
     public boolean contains(T item) {
-        Range<T> range = intervalSet.lower(Ranges.atLeast(item));
+        Range<T> range = intervalSet.floor(Ranges.singleton(item));
         if (range == null)
             return false;
 
