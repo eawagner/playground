@@ -4,9 +4,10 @@ package abbot.collection.util.range;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
+public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializable {
 
     TreeSet<Range<T>> intervalSet;
 
@@ -18,6 +19,9 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         intervalSet = new TreeSet<Range<T>>(comparator);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int size() {
         return intervalSet.size();
@@ -52,6 +56,9 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         return intervalSet.subSet(lowerBound, lowerBound.isConnected(tRange), upperBound, upperBound.isConnected(tRange));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean add(Range<T> tRange) {
         if (tRange == null || tRange.isEmpty())
@@ -65,6 +72,9 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         return intervalSet.add(tRange);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean addAll(Collection<? extends Range<T>> tRanges) {
         boolean modified = false;
@@ -74,6 +84,9 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         return modified;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean remove(Range<T> tRange) {
 
@@ -89,6 +102,9 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         throw new UnsupportedOperationException("Not yet supported");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean removeAll(Collection<? extends Range<T>> tRanges) {
         boolean modified = false;
@@ -98,6 +114,9 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         return modified;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean contains(T item) {
         Range<T> range = intervalSet.lower(Ranges.atLeast(item));
@@ -107,11 +126,17 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         return range.contains(item);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         intervalSet.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterator<Range<T>> iterator() {
         return intervalSet.iterator();
@@ -121,6 +146,9 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
         return intervalSet.descendingIterator();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SortedSet<Range<T>> asSet() {
         return Collections.unmodifiableSortedSet(intervalSet.descendingSet());
@@ -129,5 +157,4 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T> {
     public SortedSet<Range<T>> asDescendingSet() {
         return Collections.unmodifiableSortedSet(intervalSet.descendingSet());
     }
-
 }
