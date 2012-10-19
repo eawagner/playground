@@ -1,4 +1,4 @@
 collection-utils
 ================
 
-Collection
+Collection Utils
