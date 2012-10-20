@@ -9,15 +9,7 @@ import java.util.*;
 
 public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializable {
 
-    TreeSet<Range<T>> treeSet;
-
-    public TreeRangeSet() {
-        this(RangeComparators.<T>lowerOnlyComparator());
-    }
-
-    public TreeRangeSet(Comparator<Range<T>> comparator) {
-        treeSet = new TreeSet<Range<T>>(comparator);
-    }
+    TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.<T>lowerOnlyComparator());
 
     /**
      * {@inheritDoc}

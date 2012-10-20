@@ -95,8 +95,8 @@ public class RangeSetTest {
     @Ignore
     @Test
     public void speedTest() {
-        int maxNumberRanges = 1000000;
-        double maxVariance = 1000;
+        int maxNumberRanges = 10000;
+        double maxVariance = 100;
         double maxIntervalSize = .01;
         ArrayList<Range<Double>> ranges = new ArrayList<Range<Double>>(maxNumberRanges);
         ArrayList<Double> toCheck = new ArrayList<Double>(maxNumberRanges);
