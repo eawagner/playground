@@ -116,8 +116,7 @@ public class RangeSetTest {
         System.out.println();
         long startTime = System.nanoTime();
 
-        for (Range<Double> range : ranges)
-            treeRangeSet.add(range);
+        treeRangeSet.addAll(ranges);
 
         System.out.println("Add run time " + TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime,TimeUnit.NANOSECONDS));
 
