@@ -9,14 +9,14 @@ import java.util.*;
 
 public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializable {
 
-    TreeSet<Range<T>> intervalSet;
+    TreeSet<Range<T>> treeSet;
 
     public TreeRangeSet() {
         this(RangeComparators.<T>lowerOnlyComparator());
     }
 
     public TreeRangeSet(Comparator<Range<T>> comparator) {
-        intervalSet = new TreeSet<Range<T>>(comparator);
+        treeSet = new TreeSet<Range<T>>(comparator);
     }
 
     /**
@@ -24,36 +24,36 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
      */
     @Override
     public int size() {
-        return intervalSet.size();
+        return treeSet.size();
     }
 
     private Range<T> lowerBound(Range<T> tRange) {
 
         if (!tRange.hasLowerBound())
-            return intervalSet.first();
+            return treeSet.first();
 
-        Range<T> endrange = intervalSet.floor(Ranges.singleton(tRange.lowerEndpoint()));
-        return (endrange == null ? intervalSet.first() : endrange);
+        Range<T> endrange = treeSet.floor(Ranges.singleton(tRange.lowerEndpoint()));
+        return (endrange == null ? treeSet.first() : endrange);
     }
 
     private Range<T> upperBound(Range<T> tRange) {
 
         if (!tRange.hasUpperBound())
-            return intervalSet.last();
+            return treeSet.last();
 
-        Range<T> endrange = intervalSet.floor(Ranges.singleton(tRange.upperEndpoint()));
-        return (endrange == null ? intervalSet.first() : endrange);
+        Range<T> endrange = treeSet.floor(Ranges.singleton(tRange.upperEndpoint()));
+        return (endrange == null ? treeSet.first() : endrange);
     }
 
     private Set<Range<T>> intersectingRanges(Range<T> tRange) {
 
-        if (intervalSet.isEmpty())
+        if (treeSet.isEmpty())
             return Collections.emptySet();
 
         Range<T> lowerBound = lowerBound(tRange);
         Range<T> upperBound = upperBound(tRange);
 
-        return intervalSet.subSet(lowerBound, lowerBound.isConnected(tRange), upperBound, upperBound.isConnected(tRange));
+        return treeSet.subSet(lowerBound, lowerBound.isConnected(tRange), upperBound, upperBound.isConnected(tRange));
     }
 
     /**
@@ -69,7 +69,7 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
             i.remove();
         }
 
-        return intervalSet.add(tRange);
+        return treeSet.add(tRange);
     }
 
     /**
@@ -119,11 +119,35 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
      */
     @Override
     public boolean contains(T item) {
-        Range<T> range = intervalSet.floor(Ranges.singleton(item));
-        if (range == null)
+        Range<T> lowerEndpoint = treeSet.floor(Ranges.singleton(item));
+        if (lowerEndpoint == null)
             return false;
 
-        return range.contains(item);
+        return lowerEndpoint.contains(item);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean containsAll(Collection<? extends T> items) {
+        for (T item : items)
+            if (!contains(item))
+                return false;
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean containsAll(Range<T> range) {
+        Range<T> lowerEndpoint = treeSet.floor(range);
+        if (lowerEndpoint == null)
+            return false;
+
+        return lowerEndpoint.encloses(range);
     }
 
     /**
@@ -131,7 +155,7 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
      */
     @Override
     public void clear() {
-        intervalSet.clear();
+        treeSet.clear();
     }
 
     /**
@@ -139,11 +163,11 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
      */
     @Override
     public Iterator<Range<T>> iterator() {
-        return intervalSet.iterator();
+        return treeSet.iterator();
     }
 
     public Iterator<Range<T>> descendingIterator() {
-        return intervalSet.descendingIterator();
+        return treeSet.descendingIterator();
     }
 
     /**
@@ -151,10 +175,19 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
      */
     @Override
     public SortedSet<Range<T>> asSet() {
-        return Collections.unmodifiableSortedSet(intervalSet.descendingSet());
+        return Collections.unmodifiableSortedSet(treeSet.descendingSet());
     }
 
     public SortedSet<Range<T>> asDescendingSet() {
-        return Collections.unmodifiableSortedSet(intervalSet.descendingSet());
+        return Collections.unmodifiableSortedSet(treeSet.descendingSet());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Range<T> range : this)
+            sb.append(range);
+
+        return sb.toString();    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

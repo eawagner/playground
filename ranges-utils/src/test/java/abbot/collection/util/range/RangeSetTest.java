@@ -1,7 +1,14 @@
 package abbot.collection.util.range;
 
+import com.google.common.collect.BoundType;
+import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.*;
 
@@ -11,72 +18,114 @@ public class RangeSetTest {
     @Test
     public void simpleTest() {
 
-        TreeRangeSet<Integer> intervalSet = new TreeRangeSet<Integer>();
+        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
 
-        intervalSet.add(Ranges.closed(3, 9));
-        intervalSet.add(Ranges.closed(13, 19));
-        intervalSet.add(Ranges.closed(5, 6));
-        intervalSet.add(Ranges.closed(10, 12));
-        intervalSet.add(Ranges.closed(33,99));
-        intervalSet.add(Ranges.greaterThan(90));
-        intervalSet.add(Ranges.lessThan(-80));
-        intervalSet.add(Ranges.closed(0, 1));
-        intervalSet.add(Ranges.closed(89, 90));
-        intervalSet.add(Ranges.closed(20, 33));
+        rangeSet.add(Ranges.closed(3, 9));
+        rangeSet.add(Ranges.closed(13, 19));
+        rangeSet.add(Ranges.closed(5, 6));
+        rangeSet.add(Ranges.closed(10, 12));
+        rangeSet.add(Ranges.closed(33,99));
+        rangeSet.add(Ranges.greaterThan(90));
+        rangeSet.add(Ranges.lessThan(-80));
+        rangeSet.add(Ranges.closed(0, 1));
+        rangeSet.add(Ranges.closed(89, 90));
+        rangeSet.add(Ranges.closed(20, 33));
 
 
-        assertFalse(intervalSet.contains(2));
-        assertFalse(intervalSet.contains(-80));
-        assertTrue(intervalSet.contains(-81));
-        assertTrue(intervalSet.contains(0));
-        assertTrue(intervalSet.contains(12));
-        assertTrue(intervalSet.contains(9));
-        assertTrue(intervalSet.contains(7));
+        assertFalse(rangeSet.contains(2));
+        assertFalse(rangeSet.contains(-80));
+        assertTrue(rangeSet.contains(-81));
+        assertTrue(rangeSet.contains(0));
+        assertTrue(rangeSet.contains(12));
+        assertTrue(rangeSet.contains(9));
+        assertTrue(rangeSet.contains(7));
+
+        System.out.println(rangeSet);
     }
 
     @Test
     public void testEmptyRangeAdd() {
-        TreeRangeSet<Integer> intervalSet = new TreeRangeSet<Integer>();
+        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
 
-        intervalSet.add(Ranges.closed(0,3));
-        intervalSet.add(Ranges.closed(10,13));
+        rangeSet.add(Ranges.closed(0, 3));
+        rangeSet.add(Ranges.closed(10, 13));
 
         //empty ranges
-        intervalSet.add(Ranges.openClosed(5,5));
-        intervalSet.add(Ranges.closedOpen(5,5));
+        rangeSet.add(Ranges.openClosed(5, 5));
+        rangeSet.add(Ranges.closedOpen(5, 5));
 
-        assertEquals(2, intervalSet.size());
-        assertFalse(intervalSet.contains(5));
+        assertEquals(2, rangeSet.size());
+        assertFalse(rangeSet.contains(5));
+
+        System.out.println(rangeSet);
 
     }
 
     @Test
     public void testRangeConsolidation() {
-        TreeRangeSet<Integer> intervalSet = new TreeRangeSet<Integer>();
+        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
 
-        intervalSet.add(Ranges.closed(0,3));
-        intervalSet.add(Ranges.closed(10,13));
+        rangeSet.add(Ranges.closed(0,3));
+        rangeSet.add(Ranges.closed(10,13));
 
-        assertEquals(2, intervalSet.size());
-        assertFalse(intervalSet.contains(5));
+        assertEquals(2, rangeSet.size());
+        assertFalse(rangeSet.contains(5));
 
-        intervalSet.add(Ranges.open(-2, 0));
-        intervalSet.add(Ranges.open(13,15));
+        rangeSet.add(Ranges.open(-2, 0));
+        rangeSet.add(Ranges.open(13,15));
 
-        assertEquals(2, intervalSet.size());
-        assertFalse(intervalSet.contains(5));
+        assertEquals(2, rangeSet.size());
+        assertFalse(rangeSet.contains(5));
 
-        intervalSet.add(Ranges.atMost(-2));
-        intervalSet.add(Ranges.atLeast(15));
+        rangeSet.add(Ranges.atMost(-2));
+        rangeSet.add(Ranges.atLeast(15));
 
-        assertEquals(2, intervalSet.size());
-        assertFalse(intervalSet.contains(5));
+        assertEquals(2, rangeSet.size());
+        assertFalse(rangeSet.contains(5));
 
         //link them into one set
-        intervalSet.add(Ranges.open(3,10));
+        rangeSet.add(Ranges.open(3,10));
 
-        assertEquals(1, intervalSet.size());
-        assertTrue(intervalSet.contains(5));
+        assertEquals(1, rangeSet.size());
+        assertTrue(rangeSet.contains(5));
+
+        System.out.println(rangeSet);
+    }
+
+    @Ignore
+    @Test
+    public void speedTest() {
+        int maxNumberRanges = 1000000;
+        double maxVariance = 1000;
+        double maxIntervalSize = .01;
+        ArrayList<Range<Double>> ranges = new ArrayList<Range<Double>>(maxNumberRanges);
+        ArrayList<Double> toCheck = new ArrayList<Double>(maxNumberRanges);
+        Random random = new Random();
+        for (int i = 0;i < maxNumberRanges; i++) {
+            double base = random.nextDouble() * maxNumberRanges / maxVariance;
+            ranges.add(Ranges.range(
+                    base, (random.nextBoolean() ? BoundType.CLOSED : BoundType.OPEN),
+                    base + (random.nextDouble() * maxIntervalSize), (random.nextBoolean() ? BoundType.CLOSED : BoundType.OPEN)
+            ));
+
+            toCheck.add(random.nextDouble() * maxNumberRanges / maxVariance);
+        }
+
+        TreeRangeSet<Double> treeRangeSet = new TreeRangeSet<Double>();
+
+        System.out.println();
+        long startTime = System.nanoTime();
+
+        for (Range<Double> range : ranges)
+            treeRangeSet.add(range);
+
+        System.out.println("Add run time " + TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime,TimeUnit.NANOSECONDS));
+
+        startTime = System.nanoTime();
+        for (Double value : toCheck)
+            treeRangeSet.contains(value);
+
+        System.out.println("Check run time " + TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime,TimeUnit.NANOSECONDS));
     }
 
 }
