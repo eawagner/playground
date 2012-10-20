@@ -10,7 +10,7 @@ public interface RangeSet<T extends Comparable> extends Iterable<Range<T>> {
 
     /**
      * Retrieves the size of the range set
-     * @return
+     * @return size of the range set.
      */
     int size();
 
@@ -57,8 +57,8 @@ public interface RangeSet<T extends Comparable> extends Iterable<Range<T>> {
     void clear();
 
     /**
-     * Retrieve the range set as a {@link java.util.Set} of {@link com.google.common.collect.Range}s
-     * @return A set of {@link com.google.common.collect.Range}s
+     * Retrieve the range set as a {@link Set} of {@link Range}s
+     * @return A set of {@link Range}s
      */
     Set<Range<T>> asSet();
 

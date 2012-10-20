@@ -22,7 +22,7 @@ public class ConcurrentMapUtils {
      * @param valueFactory A value factory to be used to generate new value if one does not exist
      * @param <K> Key Type
      * @param <V> Value Type
-     * @return A value of type from the map for the given key.  Null, ,f no key was found and the value factory returns null
+     * @return A value of type from the map for the given key.  Null, if no key was found and the value factory returns null
      */
     public static <K,V> V getValue(ConcurrentMap<K,V> map, K key, ValueFactory<K,V> valueFactory) {
 
@@ -51,7 +51,7 @@ public class ConcurrentMapUtils {
         /**
          * Creates a new value based on the provided key
          * @param key
-         * @return
+         * @return value
          */
         V createValue(K key);
 
