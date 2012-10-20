@@ -7,11 +7,11 @@ import java.util.Comparator;
 public class RangeComparators {
 
 
-    public static <T extends Comparable> Comparator<Range<T>> getLowerBoundComparator() {
-        return new LowerBoundComparator<T>();
+    public static <T extends Comparable> Comparator<Range<T>> lowerOnlyComparator() {
+        return new LowerOnlyComparator<T>();
     }
 
-    private static class LowerBoundComparator<T extends Comparable> implements Comparator<Range<T>> {
+    private static class LowerOnlyComparator<T extends Comparable> implements Comparator<Range<T>> {
 
         @Override
         public int compare(Range<T> range1, Range<T> range2) {

@@ -12,7 +12,7 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
     TreeSet<Range<T>> intervalSet;
 
     public TreeRangeSet() {
-        this(RangeComparators.<T>getLowerBoundComparator());
+        this(RangeComparators.<T>lowerOnlyComparator());
     }
 
     public TreeRangeSet(Comparator<Range<T>> comparator) {
