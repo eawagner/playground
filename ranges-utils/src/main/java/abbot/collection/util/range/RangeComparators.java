@@ -1,5 +1,6 @@
 package abbot.collection.util.range;
 
+import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
 import java.util.Comparator;
@@ -8,9 +9,19 @@ public class RangeComparators {
 
     private static <T extends Comparable> int compareLower(Range<T> range1, Range<T> range2){
         if (range1.hasLowerBound()) {
-            if (range2.hasLowerBound())
-                return range1.lowerEndpoint().compareTo(range2.lowerEndpoint());
-            else
+            if (range2.hasLowerBound()) {
+                int compare = range1.lowerEndpoint().compareTo(range2.lowerEndpoint());
+                if (compare != 0)
+                    return compare;
+
+                //If values are equal then use bound type.  Closed will always be less than open.
+                if (range1.lowerBoundType() == range2.lowerBoundType())
+                    return 0;
+                else if (range1.lowerBoundType().equals(BoundType.CLOSED))
+                    return -1;
+                else
+                    return 1;
+            } else
                 return 1;
         } else {
             if (range2.hasLowerBound())
@@ -22,9 +33,19 @@ public class RangeComparators {
 
     private static <T extends Comparable> int compareUpper(Range<T> range1, Range<T> range2){
         if (range1.hasUpperBound()) {
-            if (range2.hasUpperBound())
-                return range1.upperEndpoint().compareTo(range2.upperEndpoint());
-            else
+            if (range2.hasUpperBound()){
+                int compare = range1.upperEndpoint().compareTo(range2.upperEndpoint());
+                if (compare != 0)
+                    return compare;
+
+                //If values are equal then use bound type.  Closed will always be greater than open.
+                if (range1.upperBoundType() == range2.upperBoundType())
+                    return 0;
+                else if (range1.upperBoundType().equals(BoundType.CLOSED))
+                    return 1;
+                else
+                    return -1;
+            } else
                 return -1;
         } else {
             if (range2.hasUpperBound())
