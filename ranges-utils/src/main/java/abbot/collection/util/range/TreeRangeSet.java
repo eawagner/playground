@@ -1,6 +1,7 @@
 package abbot.collection.util.range;
 
 
+import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 
@@ -9,7 +10,7 @@ import java.util.*;
 
 public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializable {
 
-    TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.<T>lowerOnlyComparator());
+    private TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.<T>lowerOnlyComparator());
 
     /**
      * {@inheritDoc}
@@ -76,6 +77,45 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
         return modified;
     }
 
+    private void addLowerRemainder(Range<T> current, Range<T> toRemove) {
+        if (RangeComparators.<T>lowerOnlyComparator().compare(current, toRemove) >= 0)
+            return;
+
+        if (current.hasLowerBound()) {
+            add(Ranges.range(
+                    current.lowerEndpoint(),
+                    current.lowerBoundType(),
+                    toRemove.lowerEndpoint(),
+                    toRemove.lowerBoundType() == BoundType.CLOSED ? BoundType.OPEN : BoundType.CLOSED
+            ));
+        } else {
+            if (toRemove.lowerBoundType() == BoundType.CLOSED)
+                add(Ranges.lessThan(toRemove.lowerEndpoint()));
+            else
+                add(Ranges.atMost(toRemove.lowerEndpoint()));
+        }
+    }
+    private void addUpperRemainder(Range<T> current, Range<T> toRemove) {
+        if (RangeComparators.<T>upperOnlyComparator().compare(current, toRemove) <= 0)
+            return;
+
+        if (current.hasUpperBound()) {
+            add(Ranges.range(
+                    toRemove.upperEndpoint(),
+                    toRemove.lowerBoundType() == BoundType.CLOSED ? BoundType.OPEN : BoundType.CLOSED,
+                    current.upperEndpoint(),
+                    current.upperBoundType()
+            ));
+
+        } else {
+            if (toRemove.upperBoundType() == BoundType.CLOSED)
+                add(Ranges.greaterThan(toRemove.upperEndpoint()));
+            else
+                add(Ranges.atLeast(toRemove.upperEndpoint()));
+        }
+    }
+
+
     /**
      * {@inheritDoc}
      */
@@ -91,6 +131,27 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
          * 4.  { <> } difficult with current Range api.
          *
          */
+
+//        if (tRange == null || tRange.isEmpty())
+//            return false;
+//
+//        boolean modified = false;
+//        //accounts for 2;
+//        for (Iterator<Range<T>> i = intersectingRanges(tRange).iterator(); i.hasNext(); ) {
+//            Range<T> current = i.next();
+//            modified = true;
+//            i.remove();
+//            //accounts for 1
+//            if (!tRange.encloses(current)) {
+//                //accounts for 3-4
+//                addLowerRemainder(current, tRange);
+//                addUpperRemainder(current, tRange);
+//            }
+//
+//        }
+//
+//        return modified;
+
         throw new UnsupportedOperationException("Not yet supported");
     }
 

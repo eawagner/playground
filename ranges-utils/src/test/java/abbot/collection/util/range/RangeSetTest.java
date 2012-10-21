@@ -1,8 +1,6 @@
 package abbot.collection.util.range;
 
-import com.google.common.collect.BoundType;
-import com.google.common.collect.Range;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -88,6 +86,22 @@ public class RangeSetTest {
 
         assertEquals(1, rangeSet.size());
         assertTrue(rangeSet.contains(5));
+
+        System.out.println(rangeSet);
+    }
+
+    @Ignore
+    @Test
+    public void testRemove() {
+        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
+        rangeSet.add(Ranges.<Integer>all());
+
+        System.out.println(Ranges.lessThan(1).isConnected(Ranges.singleton(1)));
+
+        rangeSet.remove(Ranges.singleton(1).canonical(DiscreteDomains.integers()));
+        rangeSet.remove(Ranges.singleton(1).canonical(DiscreteDomains.integers()));
+        rangeSet.remove(Ranges.atMost(1).canonical(DiscreteDomains.integers()));
+        rangeSet.remove(Ranges.atLeast(2).canonical(DiscreteDomains.integers()));
 
         System.out.println(rangeSet);
     }
