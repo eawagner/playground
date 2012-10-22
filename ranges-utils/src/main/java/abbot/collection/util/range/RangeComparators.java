@@ -53,7 +53,7 @@ public class RangeComparators {
                 //If values are equal then use bound type.  Closed will always be less than open.
                 if (range1.lowerBoundType() == range2.lowerBoundType())
                     return 0;
-                else if (range1.lowerBoundType().equals(BoundType.CLOSED))
+                else if (range1.lowerBoundType() == BoundType.CLOSED)
                     return -1;
                 else
                     return 1;
@@ -77,7 +77,7 @@ public class RangeComparators {
                 //If values are equal then use bound type.  Closed will always be greater than open.
                 if (range1.upperBoundType() == range2.upperBoundType())
                     return 0;
-                else if (range1.upperBoundType().equals(BoundType.CLOSED))
+                else if (range1.upperBoundType() == BoundType.CLOSED)
                     return 1;
                 else
                     return -1;
