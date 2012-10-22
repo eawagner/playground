@@ -10,7 +10,7 @@ import java.util.*;
 
 public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializable {
 
-    private TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.<T>lowerOnlyComparator());
+    private TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.lowerOnlyComparator());
 
     /**
      * {@inheritDoc}
@@ -78,7 +78,7 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
     }
 
     private void addLowerRemainder(Range<T> current, Range<T> toRemove) {
-        if (RangeComparators.<T>lowerOnlyComparator().compare(current, toRemove) >= 0)
+        if (RangeComparators.lowerOnlyComparator().compare(current, toRemove) >= 0)
             return;
 
         if (current.hasLowerBound()) {
@@ -96,7 +96,7 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
         }
     }
     private void addUpperRemainder(Range<T> current, Range<T> toRemove) {
-        if (RangeComparators.<T>upperOnlyComparator().compare(current, toRemove) <= 0)
+        if (RangeComparators.upperOnlyComparator().compare(current, toRemove) <= 0)
             return;
 
         if (current.hasUpperBound()) {

@@ -7,7 +7,43 @@ import java.util.Comparator;
 
 public class RangeComparators {
 
-    private static <T extends Comparable> int compareLower(Range<T> range1, Range<T> range2){
+    private static final Comparator<Range<? extends Comparable>> lowerOnly = new Comparator<Range<? extends Comparable>>() {
+        @Override
+        public int compare(Range<? extends Comparable> range1, Range<? extends Comparable> range2) {
+            return compareLower(range1, range2);
+        }
+    };
+
+    private static final Comparator<Range<? extends Comparable>> upperOnly = new Comparator<Range<? extends Comparable>>() {
+        @Override
+        public int compare(Range<? extends Comparable> range1, Range<? extends Comparable> range2) {
+            return compareUpper(range1, range2);
+        }
+    };
+
+    private static final Comparator<Range<? extends Comparable>> lowerBiased = new Comparator<Range<? extends Comparable>>() {
+        @Override
+        public int compare(Range<? extends Comparable> range1, Range<? extends Comparable> range2) {
+            int initial = compareLower(range1, range2);
+            if (initial != 0)
+                return initial;
+
+            return compareUpper(range1, range2);
+        }
+    };
+
+    private static final Comparator<Range<? extends Comparable>> upperBiased = new Comparator<Range<? extends Comparable>>() {
+        @Override
+        public int compare(Range<? extends Comparable> range1, Range<? extends Comparable> range2) {
+            int initial = compareUpper(range1, range2);
+            if (initial != 0)
+                return initial;
+
+            return compareLower(range1, range2);
+        }
+    };
+
+    private static int compareLower(Range<? extends Comparable> range1, Range<? extends Comparable> range2){
         if (range1.hasLowerBound()) {
             if (range2.hasLowerBound()) {
                 int compare = range1.lowerEndpoint().compareTo(range2.lowerEndpoint());
@@ -31,7 +67,7 @@ public class RangeComparators {
         }
     }
 
-    private static <T extends Comparable> int compareUpper(Range<T> range1, Range<T> range2){
+    private static int compareUpper(Range<? extends Comparable> range1, Range<? extends Comparable> range2){
         if (range1.hasUpperBound()) {
             if (range2.hasUpperBound()){
                 int compare = range1.upperEndpoint().compareTo(range2.upperEndpoint());
@@ -57,66 +93,34 @@ public class RangeComparators {
 
     /**
      * Compares only the lower bound of the ranges, ignoring the upper bound.
-     * @param <T>
      * @return -1 (less), 0 (equal), 1 (greater)
      */
-    public static <T extends Comparable> Comparator<Range<T>> lowerOnlyComparator() {
-        return new Comparator<Range<T>>() {
-            @Override
-            public int compare(Range<T> range1, Range<T> range2) {
-                return compareLower(range1, range2);
-            }
-        };
+    public static Comparator<Range<? extends Comparable>> lowerOnlyComparator() {
+        return lowerOnly;
     }
 
     /**
      * Compares only the upper bound of the ranges, ignoring the lower bound.
-     * @param <T>
      * @return -1 (less), 0 (equal), 1 (greater)
      */
-    public static <T extends Comparable> Comparator<Range<T>> upperOnlyComparator() {
-        return new Comparator<Range<T>>() {
-            @Override
-            public int compare(Range<T> range1, Range<T> range2) {
-                return compareUpper(range1, range2);
-            }
-        };
+    public static Comparator<Range<? extends Comparable>> upperOnlyComparator() {
+        return upperOnly;
     }
 
     /**
      * Compares the lower bound of the ranges and if equal then uses the upper bound.
-     * @param <T>
      * @return -1 (less), 0 (equal), 1 (greater)
      */
-    public static <T extends Comparable> Comparator<Range<T>> lowerBiasedComparator() {
-        return new Comparator<Range<T>>() {
-            @Override
-            public int compare(Range<T> range1, Range<T> range2) {
-                int initial = compareLower(range1, range2);
-                if (initial != 0)
-                    return initial;
-
-                return compareUpper(range1, range2);
-            }
-        };
+    public static Comparator<Range<? extends Comparable>> lowerBiasedComparator() {
+        return lowerBiased;
     }
 
     /**
      * Compares the upper bound of the ranges and if equal then uses the lower bound.
-     * @param <T>
      * @return -1 (less), 0 (equal), 1 (greater)
      */
-    public static <T extends Comparable> Comparator<Range<T>> upperBiasedComparator() {
-        return new Comparator<Range<T>>() {
-            @Override
-            public int compare(Range<T> range1, Range<T> range2) {
-                int initial = compareUpper(range1, range2);
-                if (initial != 0)
-                    return initial;
-
-                return compareLower(range1, range2);
-            }
-        };
+    public static Comparator<Range<? extends Comparable>> upperBiasedComparator() {
+        return upperBiased;
     }
 
 }
