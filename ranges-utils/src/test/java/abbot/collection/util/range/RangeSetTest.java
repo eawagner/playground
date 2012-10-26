@@ -16,13 +16,13 @@ public class RangeSetTest {
     @Test
     public void simpleTest() {
 
-        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
+        TreeRangeSet<Integer> rangeSet = new DiscreteTreeRangeSet<Integer>(DiscreteDomains.integers());
 
         rangeSet.add(Ranges.closed(3, 9));
         rangeSet.add(Ranges.closed(13, 19));
         rangeSet.add(Ranges.closed(5, 6));
         rangeSet.add(Ranges.closed(10, 12));
-        rangeSet.add(Ranges.closed(33,99));
+        rangeSet.add(Ranges.closed(33, 99));
         rangeSet.add(Ranges.greaterThan(90));
         rangeSet.add(Ranges.lessThan(-80));
         rangeSet.add(Ranges.closed(0, 1));
@@ -39,11 +39,12 @@ public class RangeSetTest {
         assertTrue(rangeSet.contains(7));
 
         System.out.println(rangeSet);
+        System.out.println(RangeUtils.compliment(rangeSet));
     }
 
     @Test
     public void testEmptyRangeAdd() {
-        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
+        TreeRangeSet<Integer> rangeSet = new DiscreteTreeRangeSet<Integer>(DiscreteDomains.integers());
 
         rangeSet.add(Ranges.closed(0, 3));
         rangeSet.add(Ranges.closed(10, 13));
@@ -61,7 +62,7 @@ public class RangeSetTest {
 
     @Test
     public void testRangeConsolidation() {
-        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
+        TreeRangeSet<Integer> rangeSet = new DiscreteTreeRangeSet<Integer>(DiscreteDomains.integers());
 
         rangeSet.add(Ranges.closed(0,3));
         rangeSet.add(Ranges.closed(10,13));
@@ -160,7 +161,7 @@ public class RangeSetTest {
             System.out.println();
         }
 
-        System.out.println("Add Time: " + TimeUnit.MILLISECONDS.convert(totalAddTime / numTimes,TimeUnit.NANOSECONDS) + " (avg) , " + TimeUnit.MILLISECONDS.convert(totalAddTime,TimeUnit.NANOSECONDS) + " (total)");
+        System.out.println("Add Time: " + TimeUnit.MILLISECONDS.convert(totalAddTime / numTimes, TimeUnit.NANOSECONDS) + " (avg) , " + TimeUnit.MILLISECONDS.convert(totalAddTime, TimeUnit.NANOSECONDS) + " (total)");
         System.out.println("Check Time: " + TimeUnit.MILLISECONDS.convert(totalCheckTime / numTimes,TimeUnit.NANOSECONDS) + " (avg) , " + TimeUnit.MILLISECONDS.convert(totalCheckTime,TimeUnit.NANOSECONDS) + " (total)");
     }
 

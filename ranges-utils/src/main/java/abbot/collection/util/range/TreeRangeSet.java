@@ -46,6 +46,10 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         Range<T> lowerBound = lowerBound(tRange);
         Range<T> upperBound = upperBound(tRange);
 
+        /** note this will still return ranges that are not really intersecting due to the behaviour of isConnected.
+         * For example [1,4] will be included if the range given is (4,6].  This should be accounted for when using this
+         * method.
+         */
         return treeSet.subSet(lowerBound, lowerBound.isConnected(tRange), upperBound, upperBound.isConnected(tRange));
     }
 
