@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Set;
 
 
-public interface RangeSet<T extends Comparable> extends Iterable<Range<T>> {
+public interface RangeSet<T extends Comparable<T>> extends Iterable<Range<T>> {
 
     /**
      * Retrieves the size of the range set
@@ -23,6 +23,14 @@ public interface RangeSet<T extends Comparable> extends Iterable<Range<T>> {
     boolean add(Range<T> tRange);
 
     /**
+     * Adds a range set to the range set.  If there are any overlapping ranges caused by the newly added ranges, they will
+     * be consolidated into a single range.
+     * @param tRangeSet
+     * @return true if this range set was modified, false otherwise.
+     */
+    boolean add(RangeSet<T> tRangeSet);
+
+    /**
      * Adds a collections of ranges to the range set.  If there are any overlapping ranges caused by any of the newly
      * added ranges, they will be consolidated.
      * @param tRanges
@@ -36,6 +44,14 @@ public interface RangeSet<T extends Comparable> extends Iterable<Range<T>> {
      * @return true if this range set was modified, false otherwise.
      */
     boolean remove(Range<T> tRange);
+
+    /**
+     * Removes a range from this range set.
+     * @param tRangeSet
+     * @return true if this range set was modified, false otherwise.
+     */
+    boolean remove(RangeSet<T> tRangeSet);
+
 
     /**
      * Removes all of the ranges from this range set.

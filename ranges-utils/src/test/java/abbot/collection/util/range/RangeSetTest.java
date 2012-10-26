@@ -90,17 +90,14 @@ public class RangeSetTest {
         System.out.println(rangeSet);
     }
 
-    @Ignore
     @Test
     public void testRemove() {
         TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
-        rangeSet.add(Ranges.<Integer>all());
-
-        System.out.println(Ranges.lessThan(1).isConnected(Ranges.singleton(1)));
+        rangeSet.add(Ranges.<Integer>all().canonical(DiscreteDomains.integers()));
 
         rangeSet.remove(Ranges.singleton(1).canonical(DiscreteDomains.integers()));
         rangeSet.remove(Ranges.singleton(1).canonical(DiscreteDomains.integers()));
-        rangeSet.remove(Ranges.atMost(1).canonical(DiscreteDomains.integers()));
+        rangeSet.remove(Ranges.atMost(0).canonical(DiscreteDomains.integers()));
         rangeSet.remove(Ranges.atLeast(2).canonical(DiscreteDomains.integers()));
 
         System.out.println(rangeSet);
@@ -109,8 +106,8 @@ public class RangeSetTest {
     @Ignore
     @Test
     public void speedTest() {
-        int maxNumberRanges = 10000;
-        double maxVariance = 100;
+        int maxNumberRanges = 1000000;
+        double maxVariance = 1000;
         double maxIntervalSize = .01;
         ArrayList<Range<Double>> ranges = new ArrayList<Range<Double>>(maxNumberRanges);
         ArrayList<Double> toCheck = new ArrayList<Double>(maxNumberRanges);
@@ -125,20 +122,46 @@ public class RangeSetTest {
             toCheck.add(random.nextDouble() * maxNumberRanges / maxVariance);
         }
 
-        TreeRangeSet<Double> treeRangeSet = new TreeRangeSet<Double>();
+        generateTimes(ranges, toCheck, 10);
+    }
 
-        System.out.println();
-        long startTime = System.nanoTime();
+    private void generateTimes(ArrayList<Range<Double>> ranges, ArrayList<Double> toCheck, int numTimes) {
 
-        treeRangeSet.addAll(ranges);
+        long totalAddTime = 0;
+        long totalCheckTime = 0;
 
-        System.out.println("Add run time " + TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime,TimeUnit.NANOSECONDS));
+        for (int i = 0; i < numTimes;i++) {
 
-        startTime = System.nanoTime();
-        for (Double value : toCheck)
-            treeRangeSet.contains(value);
+            RangeSet<Double> treeRangeSet = new TreeRangeSet<Double>();
+            long startTime = System.nanoTime();
 
-        System.out.println("Check run time " + TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime,TimeUnit.NANOSECONDS));
+            treeRangeSet.addAll(ranges);
+
+            long stopTime = System.nanoTime();
+            totalAddTime += (stopTime - startTime);
+            System.out.println("Add run time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS) + " for " + treeRangeSet.size() + " ranges");
+
+            startTime = System.nanoTime();
+            for (Double value : toCheck)
+                treeRangeSet.contains(value);
+
+            stopTime = System.nanoTime();
+            totalCheckTime += (stopTime - startTime);
+            System.out.println("Check run time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS));
+
+
+
+            startTime = System.nanoTime();
+            RangeSet<Double> compliment = RangeUtils.compliment(treeRangeSet);
+            System.out.println(RangeUtils.compliment(compliment).size());
+            stopTime = System.nanoTime();
+            System.out.println("Compliment time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS) + " with " + compliment.size() + " ranges");
+
+            System.out.println();
+        }
+
+        System.out.println("Add Time: " + TimeUnit.MILLISECONDS.convert(totalAddTime / numTimes,TimeUnit.NANOSECONDS) + " (avg) , " + TimeUnit.MILLISECONDS.convert(totalAddTime,TimeUnit.NANOSECONDS) + " (total)");
+        System.out.println("Check Time: " + TimeUnit.MILLISECONDS.convert(totalCheckTime / numTimes,TimeUnit.NANOSECONDS) + " (avg) , " + TimeUnit.MILLISECONDS.convert(totalCheckTime,TimeUnit.NANOSECONDS) + " (total)");
     }
 
 }

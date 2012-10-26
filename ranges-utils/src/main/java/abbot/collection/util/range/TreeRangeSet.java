@@ -8,8 +8,8 @@ import com.google.common.collect.Ranges;
 import java.io.Serializable;
 import java.util.*;
 
-public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializable {
-
+public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Serializable {
+    private static final TreeSet emptyTreeSet = new TreeSet();
     private TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.lowerOnlyComparator());
 
     /**
@@ -38,10 +38,10 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
         return (endrange == null ? treeSet.first() : endrange);
     }
 
-    private Set<Range<T>> intersectingRanges(Range<T> tRange) {
+    private NavigableSet<Range<T>> intersectingRanges(Range<T> tRange) {
 
         if (treeSet.isEmpty())
-            return Collections.emptySet();
+            return emptyTreeSet;
 
         Range<T> lowerBound = lowerBound(tRange);
         Range<T> upperBound = upperBound(tRange);
@@ -63,6 +63,20 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
         }
 
         return treeSet.add(tRange);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param tRangeSet
+     * @return
+     */
+    @Override
+    public boolean add(RangeSet<T> tRangeSet) {
+        boolean modified = false;
+        for (Range<T> tRange : tRangeSet)
+            modified |= add(tRange);
+
+        return modified;
     }
 
     /**
@@ -102,7 +116,7 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
         if (current.hasUpperBound()) {
             add(Ranges.range(
                     toRemove.upperEndpoint(),
-                    toRemove.lowerBoundType() == BoundType.CLOSED ? BoundType.OPEN : BoundType.CLOSED,
+                    toRemove.upperBoundType() == BoundType.CLOSED ? BoundType.OPEN : BoundType.CLOSED,
                     current.upperEndpoint(),
                     current.upperBoundType()
             ));
@@ -132,27 +146,49 @@ public class TreeRangeSet<T extends Comparable> implements RangeSet<T>, Serializ
          *
          */
 
-//        if (tRange == null || tRange.isEmpty())
-//            return false;
-//
-//        boolean modified = false;
-//        //accounts for 2;
-//        for (Iterator<Range<T>> i = intersectingRanges(tRange).iterator(); i.hasNext(); ) {
-//            Range<T> current = i.next();
-//            modified = true;
-//            i.remove();
-//            //accounts for 1
-//            if (!tRange.encloses(current)) {
-//                //accounts for 3-4
-//                addLowerRemainder(current, tRange);
-//                addUpperRemainder(current, tRange);
-//            }
-//
-//        }
-//
-//        return modified;
+        if (tRange == null || tRange.isEmpty())
+            return false;
 
-        throw new UnsupportedOperationException("Not yet supported");
+        boolean modified = false;
+        //accounts for 2;
+
+        Range<T> lower = null;
+        Range<T> upper = null;
+        NavigableSet<Range<T>> intersecting = intersectingRanges(tRange);
+
+        if (intersecting.size() == 1) {
+            //set lower and upper to only element to handle both 3 and 4
+            lower = upper = intersecting.pollFirst();
+            modified = true;
+        } else if (intersecting.size() > 1) {
+            //handles 3
+            lower = intersecting.pollFirst();
+            upper = intersecting.pollLast();
+
+            //all others will be enclosed so simply remove them. handles 1 and 3
+            for (Iterator<Range<T>> i = intersecting.iterator(); i.hasNext(); ) {
+                i.next();
+                i.remove();
+            }
+            modified = true;
+        }
+
+        //if there was no size then ignore. handles 2
+        if (lower != null && upper != null) {
+            addLowerRemainder(lower, tRange);
+            addUpperRemainder(upper, tRange);
+        }
+
+        return modified;
+    }
+
+    @Override
+    public boolean remove(RangeSet<T> rangeSet) {
+        boolean modified = false;
+        for (Range<T> tRange : rangeSet)
+            modified |= remove(tRange);
+
+        return modified;
     }
 
     /**
