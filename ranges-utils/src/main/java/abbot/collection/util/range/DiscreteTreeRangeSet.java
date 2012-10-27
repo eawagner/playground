@@ -41,10 +41,10 @@ public class DiscreteTreeRangeSet<T extends Comparable<T>> extends TreeRangeSet<
      */
     @Override
     public DiscreteTreeRangeSet<T> complement() {
-        DiscreteTreeRangeSet<T> compliment = new DiscreteTreeRangeSet<T>(discreteDomain);
-        compliment.add(Ranges.<T>all());
-        compliment.remove(this);
-        return compliment;
+        DiscreteTreeRangeSet<T> complement = new DiscreteTreeRangeSet<T>(discreteDomain);
+        complement.add(Ranges.<T>all());
+        complement.remove(this);
+        return complement;
     }
 
     /**

@@ -236,10 +236,10 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      */
     @Override
     public TreeRangeSet<T> complement() {
-        TreeRangeSet<T> compliment = new TreeRangeSet<T>();
-        compliment.add(Ranges.<T>all());
-        compliment.remove(this);
-        return compliment;
+        TreeRangeSet<T> complement = new TreeRangeSet<T>();
+        complement.add(Ranges.<T>all());
+        complement.remove(this);
+        return complement;
     }
 
     /**
