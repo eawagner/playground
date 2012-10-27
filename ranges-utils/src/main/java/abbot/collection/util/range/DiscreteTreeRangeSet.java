@@ -58,9 +58,8 @@ public class DiscreteTreeRangeSet<T extends Comparable<T>> extends TreeRangeSet<
 
         DiscreteTreeRangeSet that = (DiscreteTreeRangeSet) o;
 
-        if (!discreteDomain.equals(that.discreteDomain)) return false;
+        return discreteDomain.equals(that.discreteDomain);
 
-        return true;
     }
 
     /**

@@ -40,6 +40,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return (endrange == null ? treeSet.first() : endrange);
     }
 
+    @SuppressWarnings("unchecked")
     private NavigableSet<Range<T>> intersectingRanges(Range<T> tRange) {
 
         if (treeSet.isEmpty())
@@ -201,10 +202,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
     @Override
     public boolean contains(T item) {
         Range<T> lowerEndpoint = treeSet.floor(Ranges.singleton(item));
-        if (lowerEndpoint == null)
-            return false;
-
-        return lowerEndpoint.contains(item);
+        return lowerEndpoint != null && lowerEndpoint.contains(item);
     }
 
     /**
@@ -225,10 +223,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
     @Override
     public boolean containsAll(Range<T> range) {
         Range<T> lowerEndpoint = treeSet.floor(range);
-        if (lowerEndpoint == null)
-            return false;
-
-        return lowerEndpoint.encloses(range);
+        return lowerEndpoint != null && lowerEndpoint.encloses(range);
     }
 
     /**
@@ -296,9 +291,8 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
 
         TreeRangeSet that = (TreeRangeSet) o;
 
-        if (!treeSet.equals(that.treeSet)) return false;
+        return treeSet.equals(that.treeSet);
 
-        return true;
     }
 
     /**

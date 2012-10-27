@@ -8,6 +8,10 @@ import static com.google.common.collect.BoundType.CLOSED;
 
 public class RangeComparators {
 
+    private static final int LESS = -1;
+    private static final int EQUAL = 0;
+    private static final int GREATER = 1;
+
     private static final Comparator<Range<? extends Comparable>> lowerOnly = new Comparator<Range<? extends Comparable>>() {
         @Override
         public int compare(Range<? extends Comparable> range1, Range<? extends Comparable> range2) {
@@ -44,6 +48,7 @@ public class RangeComparators {
         }
     };
 
+    @SuppressWarnings("unchecked")
     private static int compareLower(Range<? extends Comparable> range1, Range<? extends Comparable> range2){
         if (range1.hasLowerBound()) {
             if (range2.hasLowerBound()) {
@@ -53,21 +58,22 @@ public class RangeComparators {
 
                 //If values are equal then use bound type.  Closed will always be less than open.
                 if (range1.lowerBoundType() == range2.lowerBoundType())
-                    return 0;
+                    return EQUAL;
                 else if (range1.lowerBoundType() == CLOSED)
-                    return -1;
+                    return LESS;
                 else
-                    return 1;
+                    return GREATER;
             } else
-                return 1;
+                return GREATER;
         } else {
             if (range2.hasLowerBound())
-                return -1;
+                return LESS;
             else
-                return 0;
+                return EQUAL;
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static int compareUpper(Range<? extends Comparable> range1, Range<? extends Comparable> range2){
         if (range1.hasUpperBound()) {
             if (range2.hasUpperBound()){
@@ -77,18 +83,18 @@ public class RangeComparators {
 
                 //If values are equal then use bound type.  Closed will always be greater than open.
                 if (range1.upperBoundType() == range2.upperBoundType())
-                    return 0;
+                    return EQUAL;
                 else if (range1.upperBoundType() == CLOSED)
-                    return 1;
+                    return GREATER;
                 else
-                    return -1;
+                    return LESS;
             } else
-                return -1;
+                return LESS;
         } else {
             if (range2.hasUpperBound())
-                return 1;
+                return GREATER;
             else
-                return 0;
+                return EQUAL;
         }
     }
 
