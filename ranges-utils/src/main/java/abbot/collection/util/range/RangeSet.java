@@ -68,7 +68,7 @@ public interface RangeSet<T extends Comparable<T>> extends Iterable<Range<T>> {
     boolean contains(T item);
 
     /**
-     * Determines if this range set contains the every item.
+     * Determines if this range set contains every item.
      * @param items
      * @return True if any range contains each item, false otherwise.
      */

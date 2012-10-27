@@ -1,6 +1,5 @@
 package abbot.collection.util.range;
 
-import com.google.common.collect.BoundType;
 import com.google.common.collect.DiscreteDomains;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
@@ -9,8 +8,11 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
+import static com.google.common.collect.BoundType.CLOSED;
+import static com.google.common.collect.BoundType.OPEN;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static junit.framework.Assert.*;
 
 public class RangeSetTest {
@@ -133,8 +135,8 @@ public class RangeSetTest {
         for (int i = 0;i < maxNumberRanges; i++) {
             double base = random.nextDouble() * maxNumberRanges / maxVariance;
             ranges.add(Ranges.range(
-                    base, (random.nextBoolean() ? BoundType.CLOSED : BoundType.OPEN),
-                    base + (random.nextDouble() * maxIntervalSize), (random.nextBoolean() ? BoundType.CLOSED : BoundType.OPEN)
+                    base, (random.nextBoolean() ? CLOSED : OPEN),
+                    base + (random.nextDouble() * maxIntervalSize), (random.nextBoolean() ? CLOSED : OPEN)
             ));
 
             toCheck.add(random.nextDouble() * maxNumberRanges / maxVariance);
@@ -157,7 +159,7 @@ public class RangeSetTest {
 
             long stopTime = System.nanoTime();
             totalAddTime += (stopTime - startTime);
-            System.out.println("Add run time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS) + " for " + treeRangeSet.size() + " ranges");
+            System.out.println("Add run time " + MILLISECONDS.convert(stopTime - startTime, NANOSECONDS) + " for " + treeRangeSet.size() + " ranges");
 
             startTime = System.nanoTime();
             for (Double value : toCheck)
@@ -165,7 +167,7 @@ public class RangeSetTest {
 
             stopTime = System.nanoTime();
             totalCheckTime += (stopTime - startTime);
-            System.out.println("Check run time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS));
+            System.out.println("Check run time " + MILLISECONDS.convert(stopTime - startTime, NANOSECONDS));
 
 
 
@@ -173,13 +175,13 @@ public class RangeSetTest {
             RangeSet<Double> complement = treeRangeSet.complement();
             System.out.println(complement.complement().size());
             stopTime = System.nanoTime();
-            System.out.println("Compliment time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS) + " with " + complement.size() + " ranges");
+            System.out.println("Compliment time " + MILLISECONDS.convert(stopTime - startTime, NANOSECONDS) + " with " + complement.size() + " ranges");
 
             System.out.println();
         }
 
-        System.out.println("Add Time: " + TimeUnit.MILLISECONDS.convert(totalAddTime / numTimes, TimeUnit.NANOSECONDS) + " (avg) , " + TimeUnit.MILLISECONDS.convert(totalAddTime, TimeUnit.NANOSECONDS) + " (total)");
-        System.out.println("Check Time: " + TimeUnit.MILLISECONDS.convert(totalCheckTime / numTimes,TimeUnit.NANOSECONDS) + " (avg) , " + TimeUnit.MILLISECONDS.convert(totalCheckTime,TimeUnit.NANOSECONDS) + " (total)");
+        System.out.println("Add Time: " + MILLISECONDS.convert(totalAddTime / numTimes, NANOSECONDS) + " (avg) , " + MILLISECONDS.convert(totalAddTime, NANOSECONDS) + " (total)");
+        System.out.println("Check Time: " + MILLISECONDS.convert(totalCheckTime / numTimes, NANOSECONDS) + " (avg) , " + MILLISECONDS.convert(totalCheckTime, NANOSECONDS) + " (total)");
     }
 
 }

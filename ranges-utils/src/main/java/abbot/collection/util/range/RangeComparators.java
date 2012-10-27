@@ -1,9 +1,10 @@
 package abbot.collection.util.range;
 
-import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
 import java.util.Comparator;
+
+import static com.google.common.collect.BoundType.CLOSED;
 
 public class RangeComparators {
 
@@ -53,7 +54,7 @@ public class RangeComparators {
                 //If values are equal then use bound type.  Closed will always be less than open.
                 if (range1.lowerBoundType() == range2.lowerBoundType())
                     return 0;
-                else if (range1.lowerBoundType() == BoundType.CLOSED)
+                else if (range1.lowerBoundType() == CLOSED)
                     return -1;
                 else
                     return 1;
@@ -77,7 +78,7 @@ public class RangeComparators {
                 //If values are equal then use bound type.  Closed will always be greater than open.
                 if (range1.upperBoundType() == range2.upperBoundType())
                     return 0;
-                else if (range1.upperBoundType() == BoundType.CLOSED)
+                else if (range1.upperBoundType() == CLOSED)
                     return 1;
                 else
                     return -1;

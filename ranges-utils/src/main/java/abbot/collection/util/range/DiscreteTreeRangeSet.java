@@ -12,21 +12,33 @@ public class DiscreteTreeRangeSet<T extends Comparable<T>> extends TreeRangeSet<
         this.discreteDomain = discreteDomain;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean add(Range<T> tRange) {
         return super.add(tRange.canonical(discreteDomain));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean remove(Range<T> tRange) {
         return super.remove(tRange.canonical(discreteDomain));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsAll(Range<T> range) {
         return super.containsAll(range.canonical(discreteDomain));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DiscreteTreeRangeSet<T> complement() {
         DiscreteTreeRangeSet<T> compliment = new DiscreteTreeRangeSet<T>(discreteDomain);
@@ -35,6 +47,9 @@ public class DiscreteTreeRangeSet<T extends Comparable<T>> extends TreeRangeSet<
         return compliment;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,6 +63,9 @@ public class DiscreteTreeRangeSet<T extends Comparable<T>> extends TreeRangeSet<
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

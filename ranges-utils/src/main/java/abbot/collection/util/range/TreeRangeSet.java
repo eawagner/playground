@@ -1,16 +1,18 @@
 package abbot.collection.util.range;
 
 
-import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.common.collect.Ranges;
 
 import java.io.Serializable;
 import java.util.*;
 
+import static com.google.common.collect.BoundType.CLOSED;
+import static com.google.common.collect.BoundType.OPEN;
+
 public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Serializable {
     private static final TreeSet emptyTreeSet = new TreeSet();
-    private TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.lowerOnlyComparator());
+    private final TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.lowerOnlyComparator());
 
     /**
      * {@inheritDoc}
@@ -104,13 +106,13 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
                     current.lowerEndpoint(),
                     current.lowerBoundType(),
                     toRemove.lowerEndpoint(),
-                    toRemove.lowerBoundType() == BoundType.CLOSED ? BoundType.OPEN : BoundType.CLOSED
+                    toRemove.lowerBoundType() == CLOSED ? OPEN : CLOSED
             ));
         } else {
-            if (toRemove.lowerBoundType() == BoundType.CLOSED)
-                add(Ranges.lessThan(toRemove.lowerEndpoint()));
-            else
-                add(Ranges.atMost(toRemove.lowerEndpoint()));
+            add(Ranges.upTo(
+                    toRemove.lowerEndpoint(),
+                    toRemove.lowerBoundType() == CLOSED ? OPEN : CLOSED
+            ));
         }
     }
     private void addUpperRemainder(Range<T> current, Range<T> toRemove) {
@@ -120,16 +122,16 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         if (current.hasUpperBound()) {
             add(Ranges.range(
                     toRemove.upperEndpoint(),
-                    toRemove.upperBoundType() == BoundType.CLOSED ? BoundType.OPEN : BoundType.CLOSED,
+                    toRemove.upperBoundType() == CLOSED ? OPEN : CLOSED,
                     current.upperEndpoint(),
                     current.upperBoundType()
             ));
 
         } else {
-            if (toRemove.upperBoundType() == BoundType.CLOSED)
-                add(Ranges.greaterThan(toRemove.upperEndpoint()));
-            else
-                add(Ranges.atLeast(toRemove.upperEndpoint()));
+            add(Ranges.downTo(
+                    toRemove.upperEndpoint(),
+                    toRemove.upperBoundType() == CLOSED ? OPEN : CLOSED
+            ));
         }
     }
 
@@ -139,16 +141,6 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      */
     @Override
     public boolean remove(Range<T> tRange) {
-
-        /**
-         * Need to handle 4 situations. "< >" represents range being removed
-         *
-         * 1.  < {} {} {} > easy
-         * 2.  {} <> {} easy
-         * 3.  {<} {} {>} not too bad
-         * 4.  { <> } difficult with current Range api.
-         *
-         */
 
         if (tRange == null || tRange.isEmpty())
             return false;
@@ -161,14 +153,11 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         NavigableSet<Range<T>> intersecting = intersectingRanges(tRange);
 
         if (intersecting.size() == 1) {
-            //set lower and upper to only element to handle both 3 and 4
             lower = upper = intersecting.pollFirst();
             modified = true;
         } else if (intersecting.size() > 1) {
-            //handles 3
             lower = intersecting.pollFirst();
             upper = intersecting.pollLast();
-            //all others will be enclosed so simply remove them. handles 1 and 3
             for (Iterator<Range<T>> i = intersecting.iterator(); i.hasNext(); ) {
                 i.next();
                 i.remove();
@@ -176,7 +165,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
             modified = true;
         }
 
-        //if there was no size then ignore. handles 2
+        //Add back any remaining portions of the outlying ranges back to the set.
         if (lower != null && upper != null) {
             addLowerRemainder(lower, tRange);
             addUpperRemainder(upper, tRange);
@@ -242,6 +231,9 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return lowerEndpoint.encloses(range);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TreeRangeSet<T> complement() {
         TreeRangeSet<T> compliment = new TreeRangeSet<T>();
@@ -282,6 +274,9 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return Collections.unmodifiableSortedSet(treeSet.descendingSet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -291,6 +286,9 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return sb.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -303,6 +301,9 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return treeSet.hashCode();
