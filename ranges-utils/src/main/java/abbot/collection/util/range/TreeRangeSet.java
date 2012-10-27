@@ -168,7 +168,6 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
             //handles 3
             lower = intersecting.pollFirst();
             upper = intersecting.pollLast();
-
             //all others will be enclosed so simply remove them. handles 1 and 3
             for (Iterator<Range<T>> i = intersecting.iterator(); i.hasNext(); ) {
                 i.next();
@@ -243,6 +242,14 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return lowerEndpoint.encloses(range);
     }
 
+    @Override
+    public TreeRangeSet<T> complement() {
+        TreeRangeSet<T> compliment = new TreeRangeSet<T>();
+        compliment.add(Ranges.<T>all());
+        compliment.remove(this);
+        return compliment;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -281,6 +288,23 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         for (Range<T> range : this)
             sb.append(range);
 
-        return sb.toString();    //To change body of overridden methods use File | Settings | File Templates.
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TreeRangeSet that = (TreeRangeSet) o;
+
+        if (!treeSet.equals(that.treeSet)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return treeSet.hashCode();
     }
 }

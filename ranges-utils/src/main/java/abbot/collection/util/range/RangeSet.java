@@ -82,6 +82,12 @@ public interface RangeSet<T extends Comparable<T>> extends Iterable<Range<T>> {
     boolean containsAll(Range<T> range);
 
     /**
+     * Returns the complement of the current range set.
+     * @return
+     */
+    RangeSet<T> complement();
+
+    /**
      * Clears all ranges from the range set.
      */
     void clear();

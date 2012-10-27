@@ -1,6 +1,9 @@
 package abbot.collection.util.range;
 
-import com.google.common.collect.*;
+import com.google.common.collect.BoundType;
+import com.google.common.collect.DiscreteDomains;
+import com.google.common.collect.Range;
+import com.google.common.collect.Ranges;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -39,7 +42,7 @@ public class RangeSetTest {
         assertTrue(rangeSet.contains(7));
 
         System.out.println(rangeSet);
-        System.out.println(RangeUtils.compliment(rangeSet));
+        System.out.println(rangeSet.complement());
     }
 
     @Test
@@ -93,13 +96,27 @@ public class RangeSetTest {
 
     @Test
     public void testRemove() {
-        TreeRangeSet<Integer> rangeSet = new TreeRangeSet<Integer>();
-        rangeSet.add(Ranges.<Integer>all().canonical(DiscreteDomains.integers()));
+        TreeRangeSet<Integer> rangeSet = new DiscreteTreeRangeSet<Integer>(DiscreteDomains.integers());
+        rangeSet.add(Ranges.<Integer>all());
 
-        rangeSet.remove(Ranges.singleton(1).canonical(DiscreteDomains.integers()));
-        rangeSet.remove(Ranges.singleton(1).canonical(DiscreteDomains.integers()));
-        rangeSet.remove(Ranges.atMost(0).canonical(DiscreteDomains.integers()));
-        rangeSet.remove(Ranges.atLeast(2).canonical(DiscreteDomains.integers()));
+        assertEquals(1, rangeSet.size());
+        assertTrue(rangeSet.contains(1));
+
+        rangeSet.remove(Ranges.singleton(1));
+        assertEquals(2, rangeSet.size());
+        assertFalse(rangeSet.contains(1));
+
+        rangeSet.remove(Ranges.singleton(1));
+        assertEquals(2, rangeSet.size());
+        assertFalse(rangeSet.contains(1));
+
+        rangeSet.remove(Ranges.atMost(0));
+        assertEquals(1, rangeSet.size());
+        assertFalse(rangeSet.contains(0));
+
+        rangeSet.remove(Ranges.atLeast(2));
+        assertEquals(0, rangeSet.size());
+        assertFalse(rangeSet.contains(2));
 
         System.out.println(rangeSet);
     }
@@ -153,10 +170,10 @@ public class RangeSetTest {
 
 
             startTime = System.nanoTime();
-            RangeSet<Double> compliment = RangeUtils.compliment(treeRangeSet);
-            System.out.println(RangeUtils.compliment(compliment).size());
+            RangeSet<Double> complement = treeRangeSet.complement();
+            System.out.println(complement.complement().size());
             stopTime = System.nanoTime();
-            System.out.println("Compliment time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS) + " with " + compliment.size() + " ranges");
+            System.out.println("Compliment time " + TimeUnit.MILLISECONDS.convert(stopTime - startTime,TimeUnit.NANOSECONDS) + " with " + complement.size() + " ranges");
 
             System.out.println();
         }
