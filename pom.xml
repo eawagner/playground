@@ -15,7 +15,7 @@
 
     <modules>
         <module>concurrency</module>
-        <module>ranges-utils</module>
+        <module>range-utils</module>
     </modules>
 
     <properties>
