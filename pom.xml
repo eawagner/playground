@@ -19,7 +19,7 @@
     </modules>
 
     <properties>
-        <java.version>1.6</java.version>
+        <java.version>1.7</java.version>
         <guava.version>13.0</guava.version>
         <junit.version>4.6</junit.version>
     </properties>
