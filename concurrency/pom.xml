@@ -3,13 +3,13 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>collection-utils</groupId>
+        <groupId>abbot-utils</groupId>
         <artifactId>parent</artifactId>
         <version>0.1</version>
     </parent>
 
     <artifactId>concurrency</artifactId>
-    <name>Concurrency Collection Utils</name>
+    <name>Concurrency Utils</name>
 
     <dependencies>
         <dependency>
