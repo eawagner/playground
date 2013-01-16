@@ -5,6 +5,13 @@ import com.google.common.collect.DiscreteDomain;
 
 public class RangeSets {
 
+    public static <T extends Comparable<T>> RangeSet<T> newRangeSet() {
+        return new TreeRangeSet<T>();
+    }
+
+    public static <T extends Comparable<T>> RangeSet<T> newRangeSet(DiscreteDomain<T> domain) {
+        return new DiscreteTreeRangeSet<T>(domain);
+    }
 
     public static <T extends Comparable<T>> RangeSet<T> union(RangeSet<T> ... rangeSets) {
         TreeRangeSet<T> result = new TreeRangeSet<T>();
