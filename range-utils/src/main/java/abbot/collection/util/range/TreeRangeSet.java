@@ -10,6 +10,17 @@ import java.util.*;
 import static com.google.common.collect.BoundType.CLOSED;
 import static com.google.common.collect.BoundType.OPEN;
 
+/**
+ * Implementation of {@link RangeSet} backed by an {@link java.util.TreeSet}.
+ *
+ * The {@link java.util.TreeSet} enables this implementation to have a O(log N) lookup within the set via the contains operation.
+ *
+ * This class will also combine ranges that overlap to minimize the total ranges with the set.  For example, integer ranges
+ * [1..6] and [4..20] will be combined into a single range [1..20] to minimize storage and lookup speed. Because of this
+ * add and removes are generally O(log N) with worse case of O(N)
+ *
+ * @param <T>
+ */
 public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Serializable {
     private static final TreeSet emptyTreeSet = new TreeSet();
     private final TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.lowerOnlyComparator());
@@ -74,8 +85,6 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
 
     /**
      * {@inheritDoc}
-     * @param tRangeSet
-     * @return
      */
     @Override
     public boolean add(RangeSet<T> tRangeSet) {
