@@ -22,7 +22,10 @@ import static com.google.common.collect.BoundType.OPEN;
  * @param <T>
  */
 public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Serializable {
+
     private static final TreeSet emptyTreeSet = new TreeSet();
+
+    @SuppressWarnings("unchecked")
     private final TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.lowerOnlyComparator());
 
     /**
@@ -107,6 +110,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return modified;
     }
 
+    @SuppressWarnings("unchecked")
     private void addLowerRemainder(Range<T> current, Range<T> toRemove) {
         if (RangeComparators.lowerOnlyComparator().compare(current, toRemove) >= 0)
             return;
@@ -125,6 +129,8 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
             ));
         }
     }
+
+    @SuppressWarnings("unchecked")
     private void addUpperRemainder(Range<T> current, Range<T> toRemove) {
         if (RangeComparators.upperOnlyComparator().compare(current, toRemove) <= 0)
             return;
@@ -271,7 +277,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      */
     @Override
     public SortedSet<Range<T>> asSet() {
-        return Collections.unmodifiableSortedSet(treeSet.descendingSet());
+        return Collections.unmodifiableSortedSet(treeSet);
     }
 
     public SortedSet<Range<T>> asDescendingSet() {

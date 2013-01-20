@@ -22,7 +22,7 @@ public abstract class AbstractBufferedOutputStream extends OutputStream {
 
     /**
      * Writes the buffer to the destination after it is either full, or has been flushed.
-     * @param buf
+     * @param buf data to write
      * @throws IOException
      */
     protected abstract void writeBuffer(byte [] buf) throws IOException;
@@ -64,7 +64,7 @@ public abstract class AbstractBufferedOutputStream extends OutputStream {
 
     /**
      * Provides the amount of buffer that is left to be written to.
-     * @return
+     * @return number of bytes available in the buffer
      */
     protected int available() {
         return buf.length - curr;

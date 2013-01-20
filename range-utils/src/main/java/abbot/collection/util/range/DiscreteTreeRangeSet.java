@@ -8,7 +8,7 @@ import com.google.common.collect.Ranges;
 /**
  * An implementation of {@link TreeRangeSet} which handles all required operations to work with {@link DiscreteDomain} ranges
  * such as {@link com.google.common.collect.DiscreteDomains#integers()}.  All of the ranges used within this implementation
- * will be canonicalized to the {@link DiscreteDomain} provided.
+ * will be canonicalized using the {@link DiscreteDomain} provided.
  * @param <T>
  */
 public class DiscreteTreeRangeSet<T extends Comparable<T>> extends TreeRangeSet<T>{

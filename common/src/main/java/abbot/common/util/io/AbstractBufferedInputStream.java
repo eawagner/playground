@@ -17,7 +17,7 @@ public abstract class AbstractBufferedInputStream extends InputStream {
 
     /**
      * Returns true if there is no more source data.
-     * @return
+     * @return true if at the end of the source data.
      */
     protected abstract boolean isEOF();
 
