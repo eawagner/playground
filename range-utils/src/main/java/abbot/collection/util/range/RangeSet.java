@@ -15,6 +15,12 @@ public interface RangeSet<T extends Comparable<T>> extends Iterable<Range<T>> {
     int size();
 
     /**
+     * Returns true if there are not ranges in the RangeSet
+     * @return true if there are no ranges, false otherwise
+     */
+    boolean isEmpty();
+
+    /**
      * Adds a range to the range set.  If there are any overlapping ranges caused by the newly added range, they will
      * be consolidated into a single range.
      * @param tRange
@@ -36,7 +42,7 @@ public interface RangeSet<T extends Comparable<T>> extends Iterable<Range<T>> {
      * @param tRanges
      * @return true if this range set was modified, false otherwise.
      */
-    boolean addAll(Collection<? extends Range<T>> tRanges);
+    boolean addAll(Iterable<? extends Range<T>> tRanges);
 
     /**
      * Removes a range from this range set.
@@ -58,7 +64,7 @@ public interface RangeSet<T extends Comparable<T>> extends Iterable<Range<T>> {
      * @param tRanges
      * @return true if this range set was modified, false otherwise.
      */
-    boolean removeAll(Collection<? extends Range<T>> tRanges);
+    boolean removeAll(Iterable<? extends Range<T>> tRanges);
 
     /**
      * Determines if this range set contains the provided item.
@@ -72,14 +78,14 @@ public interface RangeSet<T extends Comparable<T>> extends Iterable<Range<T>> {
      * @param items
      * @return True if any range contains each item, false otherwise.
      */
-    boolean containsAll(Collection<? extends T> items);
+    boolean containsAll(Iterable<? extends T> items);
 
     /**
      * Determines if this range set contains the provided range.
      * @param range
      * @return True if the range is fully contain within the set, false otherwise.
      */
-    boolean containsAll(Range<T> range);
+    boolean encloses(Range<T> range);
 
     /**
      * Returns the complement of the current range set.

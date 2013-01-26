@@ -38,8 +38,8 @@ public class DiscreteTreeRangeSet<T extends Comparable<T>> extends TreeRangeSet<
      * {@inheritDoc}
      */
     @Override
-    public boolean containsAll(Range<T> range) {
-        return super.containsAll(range.canonical(discreteDomain));
+    public boolean encloses(Range<T> range) {
+        return super.encloses(range.canonical(discreteDomain));
     }
 
     /**

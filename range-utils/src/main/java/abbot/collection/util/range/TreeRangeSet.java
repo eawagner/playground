@@ -36,6 +36,11 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         return treeSet.size();
     }
 
+    @Override
+    public boolean isEmpty() {
+        return treeSet.isEmpty();
+    }
+
     private Range<T> lowerBound(Range<T> tRange) {
 
         if (!tRange.hasLowerBound())
@@ -102,7 +107,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      * {@inheritDoc}
      */
     @Override
-    public boolean addAll(Collection<? extends Range<T>> tRanges) {
+    public boolean addAll(Iterable<? extends Range<T>> tRanges) {
         boolean modified = false;
         for (Range<T> tRange : tRanges)
             modified |= add(tRange);
@@ -203,7 +208,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      * {@inheritDoc}
      */
     @Override
-    public boolean removeAll(Collection<? extends Range<T>> tRanges) {
+    public boolean removeAll(Iterable<? extends Range<T>> tRanges) {
         boolean modified = false;
         for (Range<T> tRange : tRanges)
             modified |= remove(tRange);
@@ -224,7 +229,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      * {@inheritDoc}
      */
     @Override
-    public boolean containsAll(Collection<? extends T> items) {
+    public boolean containsAll(Iterable<? extends T> items) {
         for (T item : items)
             if (!contains(item))
                 return false;
@@ -236,7 +241,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      * {@inheritDoc}
      */
     @Override
-    public boolean containsAll(Range<T> range) {
+    public boolean encloses(Range<T> range) {
         Range<T> lowerEndpoint = treeSet.floor(range);
         return lowerEndpoint != null && lowerEndpoint.encloses(range);
     }
