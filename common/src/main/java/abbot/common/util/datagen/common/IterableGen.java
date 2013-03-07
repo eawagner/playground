@@ -6,9 +6,13 @@ import com.google.common.collect.AbstractIterator;
 
 import java.util.Iterator;
 
+/**
+ * Generates a new iterable with values populated from the provided seed generator.
+ * @param <T>
+ */
 public class IterableGen<T> implements Generator<Iterable<T>> {
 
-    Generator<T> seedGenerator = new NullGen<T>();
+    Generator<T> seedGenerator = new StaticValueGen<T>();  //Defaults as null generator
 
     private Iterator<T> makeIterator() {
         return new AbstractIterator<T>() {
@@ -19,6 +23,9 @@ public class IterableGen<T> implements Generator<Iterable<T>> {
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<T> generate() {
         return new Iterable<T>() {
@@ -29,6 +36,10 @@ public class IterableGen<T> implements Generator<Iterable<T>> {
         };
     }
 
+    /**
+     * Sets the generator used to generate each element in the {@link Iterable}.
+     * @param seedGenerator
+     */
     public void setSeedGenerator(Generator<T> seedGenerator) {
         this.seedGenerator = seedGenerator;
     }
