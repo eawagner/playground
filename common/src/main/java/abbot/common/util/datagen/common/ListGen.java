@@ -3,11 +3,11 @@ package abbot.common.util.datagen.common;
 import abbot.common.util.datagen.Generator;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.limit;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.emptyList;
 
 public class ListGen<T> implements Generator<Collection<T>> {
 
@@ -17,11 +17,9 @@ public class ListGen<T> implements Generator<Collection<T>> {
     @Override
     public List<T> generate() {
         if (numElements <=0)
-            return Collections.emptyList();
+            return emptyList();
 
         return newArrayList(limit(iterableGen.generate(), numElements));
-
-
     }
 
     public void setSeedGenerator(Generator<T> seedGenerator) {

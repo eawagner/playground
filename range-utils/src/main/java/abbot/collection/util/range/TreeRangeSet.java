@@ -7,11 +7,11 @@ import com.google.common.collect.Ranges;
 import java.io.Serializable;
 import java.util.*;
 
-import static abbot.collection.util.range.RangeComparators.lowerOnlyComparator;
-import static abbot.collection.util.range.RangeComparators.upperOnlyComparator;
+import static abbot.collection.util.range.RangeComparators.*;
 import static com.google.common.collect.BoundType.CLOSED;
 import static com.google.common.collect.BoundType.OPEN;
 import static com.google.common.collect.Ranges.*;
+import static java.util.Collections.unmodifiableSortedSet;
 
 /**
  * Implementation of {@link RangeSet} backed by an {@link java.util.TreeSet}.
@@ -285,11 +285,11 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      */
     @Override
     public SortedSet<Range<T>> asSet() {
-        return Collections.unmodifiableSortedSet(treeSet);
+        return unmodifiableSortedSet(treeSet);
     }
 
     public SortedSet<Range<T>> asDescendingSet() {
-        return Collections.unmodifiableSortedSet(treeSet.descendingSet());
+        return unmodifiableSortedSet(treeSet.descendingSet());
     }
 
     /**
