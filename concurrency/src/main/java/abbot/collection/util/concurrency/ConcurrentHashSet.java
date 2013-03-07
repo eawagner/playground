@@ -1,15 +1,16 @@
 package abbot.collection.util.concurrency;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Collections.newSetFromMap;
+
 /**
  * This is a simple thread-safe, non-blocking {@link Collection}.
  *
- * This simply wraps the {@link Collections#newSetFromMap} method in an easy to use class implementation.
+ * This simply wraps the {@link java.util.Collections#newSetFromMap} method in an easy to use class implementation.
  *
  * @param <E>
  */
@@ -18,15 +19,15 @@ public class ConcurrentHashSet<E> implements Set<E>{
     private Set<E> internal;
 
     public ConcurrentHashSet() {
-        internal = Collections.newSetFromMap(new ConcurrentHashMap<E, Boolean>());
+        internal = newSetFromMap(new ConcurrentHashMap<E, Boolean>());
     }
 
     public ConcurrentHashSet(int initialCapacity) {
-        internal = Collections.newSetFromMap(new ConcurrentHashMap<E, Boolean>(initialCapacity));
+        internal = newSetFromMap(new ConcurrentHashMap<E, Boolean>(initialCapacity));
     }
 
     public ConcurrentHashSet(int initialCapacity, float loadFactor, int concurrencyLevel) {
-        internal = Collections.newSetFromMap(new ConcurrentHashMap<E, Boolean>(initialCapacity, loadFactor, concurrencyLevel));
+        internal = newSetFromMap(new ConcurrentHashMap<E, Boolean>(initialCapacity, loadFactor, concurrencyLevel));
     }
 
     public ConcurrentHashSet(Collection<? extends E> c) {

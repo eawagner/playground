@@ -11,6 +11,7 @@ import java.util.Random;
 
 import static com.google.common.collect.BoundType.CLOSED;
 import static com.google.common.collect.BoundType.OPEN;
+import static com.google.common.collect.Ranges.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static junit.framework.Assert.*;
@@ -23,16 +24,16 @@ public class RangeSetTest {
 
         TreeRangeSet<Integer> rangeSet = new DiscreteTreeRangeSet<Integer>(DiscreteDomains.integers());
 
-        rangeSet.add(Ranges.closed(3, 9));
-        rangeSet.add(Ranges.closed(13, 19));
-        rangeSet.add(Ranges.closed(5, 6));
-        rangeSet.add(Ranges.closed(10, 12));
-        rangeSet.add(Ranges.closed(33, 99));
-        rangeSet.add(Ranges.greaterThan(90));
-        rangeSet.add(Ranges.lessThan(-80));
-        rangeSet.add(Ranges.closed(0, 1));
-        rangeSet.add(Ranges.closed(89, 90));
-        rangeSet.add(Ranges.closed(20, 33));
+        rangeSet.add(closed(3, 9));
+        rangeSet.add(closed(13, 19));
+        rangeSet.add(closed(5, 6));
+        rangeSet.add(closed(10, 12));
+        rangeSet.add(closed(33, 99));
+        rangeSet.add(greaterThan(90));
+        rangeSet.add(lessThan(-80));
+        rangeSet.add(closed(0, 1));
+        rangeSet.add(closed(89, 90));
+        rangeSet.add(closed(20, 33));
 
 
         assertFalse(rangeSet.contains(2));
@@ -51,12 +52,12 @@ public class RangeSetTest {
     public void testEmptyRangeAdd() {
         TreeRangeSet<Integer> rangeSet = new DiscreteTreeRangeSet<Integer>(DiscreteDomains.integers());
 
-        rangeSet.add(Ranges.closed(0, 3));
-        rangeSet.add(Ranges.closed(10, 13));
+        rangeSet.add(closed(0, 3));
+        rangeSet.add(closed(10, 13));
 
         //empty ranges
-        rangeSet.add(Ranges.openClosed(5, 5));
-        rangeSet.add(Ranges.closedOpen(5, 5));
+        rangeSet.add(openClosed(5, 5));
+        rangeSet.add(closedOpen(5, 5));
 
         assertEquals(2, rangeSet.size());
         assertFalse(rangeSet.contains(5));
@@ -69,26 +70,26 @@ public class RangeSetTest {
     public void testRangeConsolidation() {
         TreeRangeSet<Integer> rangeSet = new DiscreteTreeRangeSet<Integer>(DiscreteDomains.integers());
 
-        rangeSet.add(Ranges.closed(0,3));
-        rangeSet.add(Ranges.closed(10,13));
+        rangeSet.add(closed(0, 3));
+        rangeSet.add(closed(10, 13));
 
         assertEquals(2, rangeSet.size());
         assertFalse(rangeSet.contains(5));
 
-        rangeSet.add(Ranges.open(-2, 0));
-        rangeSet.add(Ranges.open(13,15));
+        rangeSet.add(open(-2, 0));
+        rangeSet.add(open(13, 15));
 
         assertEquals(2, rangeSet.size());
         assertFalse(rangeSet.contains(5));
 
-        rangeSet.add(Ranges.atMost(-2));
-        rangeSet.add(Ranges.atLeast(15));
+        rangeSet.add(atMost(-2));
+        rangeSet.add(atLeast(15));
 
         assertEquals(2, rangeSet.size());
         assertFalse(rangeSet.contains(5));
 
         //link them into one set
-        rangeSet.add(Ranges.open(3,10));
+        rangeSet.add(open(3, 10));
 
         assertEquals(1, rangeSet.size());
         assertTrue(rangeSet.contains(5));
@@ -104,19 +105,19 @@ public class RangeSetTest {
         assertEquals(1, rangeSet.size());
         assertTrue(rangeSet.contains(1));
 
-        rangeSet.remove(Ranges.singleton(1));
+        rangeSet.remove(singleton(1));
         assertEquals(2, rangeSet.size());
         assertFalse(rangeSet.contains(1));
 
-        rangeSet.remove(Ranges.singleton(1));
+        rangeSet.remove(singleton(1));
         assertEquals(2, rangeSet.size());
         assertFalse(rangeSet.contains(1));
 
-        rangeSet.remove(Ranges.atMost(0));
+        rangeSet.remove(atMost(0));
         assertEquals(1, rangeSet.size());
         assertFalse(rangeSet.contains(0));
 
-        rangeSet.remove(Ranges.atLeast(2));
+        rangeSet.remove(atLeast(2));
         assertEquals(0, rangeSet.size());
         assertFalse(rangeSet.contains(2));
 
@@ -134,7 +135,7 @@ public class RangeSetTest {
         Random random = new Random();
         for (int i = 0;i < maxNumberRanges; i++) {
             double base = random.nextDouble() * maxNumberRanges / maxVariance;
-            ranges.add(Ranges.range(
+            ranges.add(range(
                     base, (random.nextBoolean() ? CLOSED : OPEN),
                     base + (random.nextDouble() * maxIntervalSize), (random.nextBoolean() ? CLOSED : OPEN)
             ));

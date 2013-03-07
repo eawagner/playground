@@ -2,7 +2,6 @@ package abbot.collection.util.range;
 
 import com.google.common.collect.Range;
 
-import java.util.Collection;
 import java.util.Set;
 
 

@@ -7,8 +7,11 @@ import com.google.common.collect.Ranges;
 import java.io.Serializable;
 import java.util.*;
 
+import static abbot.collection.util.range.RangeComparators.lowerOnlyComparator;
+import static abbot.collection.util.range.RangeComparators.upperOnlyComparator;
 import static com.google.common.collect.BoundType.CLOSED;
 import static com.google.common.collect.BoundType.OPEN;
+import static com.google.common.collect.Ranges.*;
 
 /**
  * Implementation of {@link RangeSet} backed by an {@link java.util.TreeSet}.
@@ -26,7 +29,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
     private static final TreeSet emptyTreeSet = new TreeSet();
 
     @SuppressWarnings("unchecked")
-    private final TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(RangeComparators.lowerOnlyComparator());
+    private final TreeSet<Range<T>> treeSet = new TreeSet<Range<T>>(lowerOnlyComparator());
 
     /**
      * {@inheritDoc}
@@ -46,7 +49,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         if (!tRange.hasLowerBound())
             return treeSet.first();
 
-        Range<T> endrange = treeSet.floor(Ranges.singleton(tRange.lowerEndpoint()));
+        Range<T> endrange = treeSet.floor(singleton(tRange.lowerEndpoint()));
         return (endrange == null ? treeSet.first() : endrange);
     }
 
@@ -55,7 +58,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
         if (!tRange.hasUpperBound())
             return treeSet.last();
 
-        Range<T> endrange = treeSet.floor(Ranges.singleton(tRange.upperEndpoint()));
+        Range<T> endrange = treeSet.floor(singleton(tRange.upperEndpoint()));
         return (endrange == null ? treeSet.first() : endrange);
     }
 
@@ -117,18 +120,18 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
 
     @SuppressWarnings("unchecked")
     private void addLowerRemainder(Range<T> current, Range<T> toRemove) {
-        if (RangeComparators.lowerOnlyComparator().compare(current, toRemove) >= 0)
+        if (lowerOnlyComparator().compare(current, toRemove) >= 0)
             return;
 
         if (current.hasLowerBound()) {
-            add(Ranges.range(
+            add(range(
                     current.lowerEndpoint(),
                     current.lowerBoundType(),
                     toRemove.lowerEndpoint(),
                     toRemove.lowerBoundType() == CLOSED ? OPEN : CLOSED
             ));
         } else {
-            add(Ranges.upTo(
+            add(upTo(
                     toRemove.lowerEndpoint(),
                     toRemove.lowerBoundType() == CLOSED ? OPEN : CLOSED
             ));
@@ -137,11 +140,11 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
 
     @SuppressWarnings("unchecked")
     private void addUpperRemainder(Range<T> current, Range<T> toRemove) {
-        if (RangeComparators.upperOnlyComparator().compare(current, toRemove) <= 0)
+        if (upperOnlyComparator().compare(current, toRemove) <= 0)
             return;
 
         if (current.hasUpperBound()) {
-            add(Ranges.range(
+            add(range(
                     toRemove.upperEndpoint(),
                     toRemove.upperBoundType() == CLOSED ? OPEN : CLOSED,
                     current.upperEndpoint(),
@@ -149,7 +152,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
             ));
 
         } else {
-            add(Ranges.downTo(
+            add(downTo(
                     toRemove.upperEndpoint(),
                     toRemove.upperBoundType() == CLOSED ? OPEN : CLOSED
             ));
@@ -221,7 +224,7 @@ public class TreeRangeSet<T extends Comparable<T>> implements RangeSet<T>, Seria
      */
     @Override
     public boolean contains(T item) {
-        Range<T> lowerEndpoint = treeSet.floor(Ranges.singleton(item));
+        Range<T> lowerEndpoint = treeSet.floor(singleton(item));
         return lowerEndpoint != null && lowerEndpoint.contains(item);
     }
 
