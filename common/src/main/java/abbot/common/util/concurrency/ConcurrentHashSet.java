@@ -1,4 +1,4 @@
-package abbot.collection.util.concurrency;
+package abbot.common.util.concurrency;
 
 import java.util.Collection;
 import java.util.Iterator;
